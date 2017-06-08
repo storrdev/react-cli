@@ -1,0 +1,21 @@
+{
+  "name": "react-cli",
+  "version": "0.0.1",
+  "description": "React component creation command line interface.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stephen Orr",
+  "license": "ISC",
+  "bin": {
+    "rcli": "./index.js"
+  },
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "change-case": "^3.0.1",
+    "commander": "^2.9.0",
+    "handlebars": "^4.0.10",
+    "mu2": "^0.5.21"
+  }
+}
