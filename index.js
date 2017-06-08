@@ -15,12 +15,12 @@ program
     let redux = typeof program.redux !== 'undefined';
 
     // If components or containers directory doesn't exist, create it first.
-    if (!fs.existsSync(__dirname + `/${redux ? 'containers' : 'components'}`)) {
-      fs.mkdirSync(__dirname + `/${redux ? 'containers' : 'components'}`);
+    if (!fs.existsSync(process.cwd() + `/${redux ? 'containers' : 'components'}`)) {
+      fs.mkdirSync(process.cwd() + `/${redux ? 'containers' : 'components'}`);
     }
 
     // Create dir for component/container
-    let dir = __dirname + `/${redux ? 'containers' : 'components'}/${name}`;
+    let dir = process.cwd() + `/${redux ? 'containers' : 'components'}/${name}`;
 
     if (fs.existsSync(dir)) {
       console.error(chalk.red(`The ${redux ? 'container' : 'component'} "${name}" already exists.`));
