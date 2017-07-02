@@ -3,16 +3,20 @@
 let chalk      = require('chalk');
 let changeCase = require('change-case');
 let fs         = require('fs');
-let Handlebars = require('handlebars');
 let path       = require('path');
 let program    = require('commander');
+
+let linkScssFile = require('./linkScssFile');
+let templateFile = require('./templateFile');
 
 program
   .arguments('<name>')
   .option('-r --redux', 'Connect the component to redux')
+  .option('-s --scss', 'Create a scss file for the component')
   .action(name => {
 
     let redux = typeof program.redux !== 'undefined';
+    let scss  = typeof program.scss !== 'undefined';
 
     // If components or containers directory doesn't exist, create it first.
     if (!fs.existsSync(process.cwd() + `/${redux ? 'containers' : 'components'}`)) {
@@ -39,16 +43,7 @@ program
       Create package.json file
      */
 
-    let packagePath = `${dir}/package.json`;
-
-    let packageSource = fs.readFileSync(__dirname + '/templates/package.json').toString();
-
-    let packageTemplate = Handlebars.compile(packageSource);
-
-    let packageResult = packageTemplate(options);
-
-    fs.writeFile(packagePath, packageResult, err => {
-      if (err) throw err;
+    templateFile(`${dir}/package.json`, 'package.json', options, () => {
       console.log(chalk.green(`The ${redux ? 'container' : 'component'}'s "package.json" has been created successfully!`));
     });
 
@@ -56,17 +51,39 @@ program
       Create component or container file
      */
 
-    let scriptPath = `${dir}/${name}.js`;
-
-    let scriptSource = fs.readFileSync(__dirname + `/templates/${redux ? 'container' : 'component'}.js`).toString();
-
-    let scriptTemplate = Handlebars.compile(scriptSource);
-
-    let scriptResult = scriptTemplate(options);
-
-    fs.writeFile(scriptPath, scriptResult, err => {
-      if (err) throw err;
+    templateFile(`${dir}/${name}.js`, `${redux ? 'container' : 'component'}.js`, options, () => {
       console.log(chalk.green(`The ${redux ? 'container' : 'component'} "${name}" has been created successfully!`));
     });
+
+    if (scss) {
+      /*
+        Create scss file
+       */
+
+      templateFile(`${dir}/${name}.scss`, 'style.scss', options, () => {
+        console.log(chalk.green(`The scss stylesheet has been created successfully!`));
+      });
+
+      scssIndexPath = process.cwd() + `/${redux ? 'containers' : 'components'}/${redux ? 'containers' : 'components'}.scss`;
+      scssIndexData = `@import './${name}/${name}.scss';\n`;
+
+      // If components or containers scss file doesn't exist, create it first.
+      if (!fs.existsSync(scssIndexPath)) {
+
+        console.log(`/${redux ? 'containers' : 'components'}/${redux ? 'containers' : 'components'}.scss does not exist, creating now.`);
+
+        fs.writeFile(scssIndexPath, scssIndexData, err => {
+          if (err) console.error(err);
+          console.log(`/${redux ? 'containers' : 'components'}/${redux ? 'containers' : 'components'}.scss has been created successfully!`);
+        });
+      } else {
+        // Add scss import to "index" of stylesheets
+        console.log(`Appending ${name}.scss to /${redux ? 'containers' : 'components'}/${redux ? 'containers' : 'components'}.scss`);
+
+        fs.appendFileSync(scssIndexPath, scssIndexData);
+        console.log('Scss file linked successfully!');
+
+      }
+    }
   })
   .parse(process.argv);
