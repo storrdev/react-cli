@@ -13,26 +13,28 @@ program
   .arguments('<name>')
   .option('-r --redux', 'Connect the component to redux')
   .option('-s --scss', 'Create a scss file for the component')
+  .option('-m --material', 'Create a material ui component')
   .action(name => {
 
-    let redux = typeof program.redux !== 'undefined';
-    let scss  = typeof program.scss !== 'undefined';
+    let redux     = typeof program.redux !== 'undefined';
+    let scss      = typeof program.scss !== 'undefined';
+    let material  = typeof program.material !== 'undefined';
 
-    // If components or containers directory doesn't exist, create it first.
-    if (!fs.existsSync(process.cwd() + `/${redux ? 'containers' : 'components'}`)) {
-      fs.mkdirSync(process.cwd() + `/${redux ? 'containers' : 'components'}`);
-    }
+    // // If components or containers directory doesn't exist, create it first.
+    // if (!fs.existsSync(process.cwd() + `/${redux ? 'containers' : 'components'}`)) {
+    //   fs.mkdirSync(process.cwd() + `/${redux ? 'containers' : 'components'}`);
+    // }
 
-    // Create dir for component/container
-    let dir = process.cwd() + `/${redux ? 'containers' : 'components'}/${name}`;
+    // // Create dir for component/container
+    // let dir = process.cwd() + `/${redux ? 'containers' : 'components'}/${name}`;
 
-    if (fs.existsSync(dir)) {
-      console.error(chalk.red(`The ${redux ? 'container' : 'component'} "${name}" already exists.`));
-      // Exit with failure
-      process.exit(1);
-    }
+    // if (fs.existsSync(dir)) {
+    //   console.error(chalk.red(`The ${redux ? 'container' : 'component'} "${name}" already exists.`));
+    //   // Exit with failure
+    //   process.exit(1);
+    // }
 
-    fs.mkdirSync(dir);
+    // fs.mkdirSync(dir);
 
     let options = {
       "name":      name,
@@ -43,7 +45,7 @@ program
       Create package.json file
      */
 
-    templateFile(`${dir}/package.json`, 'package.json', options, () => {
+    templateFile(`package.json`, 'package.json', options, () => {
       console.log(chalk.green(`The ${redux ? 'container' : 'component'}'s "package.json" has been created successfully!`));
     });
 
@@ -51,9 +53,20 @@ program
       Create component or container file
      */
 
-    templateFile(`${dir}/${name}.js`, `${redux ? 'container' : 'component'}.js`, options, () => {
-      console.log(chalk.green(`The ${redux ? 'container' : 'component'} "${name}" has been created successfully!`));
-    });
+    if (material) {
+      templateFile(`${name}.js`, 'component/material.js', options, () => {
+        console.log(chalk.green(`The material ui component "${name}" has been created successfully!`));
+      });
+
+      templateFile(`styles.js`, 'component/styles.js', options, () => {
+        console.log(chalk.green(`The material ui component "${name}"'s style.js has been created successfully!`));
+      });
+    } else {
+      templateFile(`${dir}/${name}.js`, `${redux ? 'container' : 'component'}.js`, options, () => {
+        console.log(chalk.green(`The ${redux ? 'container' : 'component'} "${name}" has been created successfully!`));
+      });
+    }
+
 
     if (scss) {
       /*

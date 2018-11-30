@@ -1,6 +1,6 @@
 {
   "name": "react-cli-redux",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "React component creation command line interface.",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "author": "Stephen Orr",
   "license": "ISC",
-  "repository" : {
+  "repository": {
     "type": "git",
     "url": "https://github.com/storrdev/react-cli"
   },
