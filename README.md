@@ -4,10 +4,11 @@ Just a little React/Redux component creation CLI I built to save myself some tim
 ```
 Usage: rcli [options] <name>
 
-  Options:
-
-    -h, --help  output usage information
-    -r --redux  Connect the component to redux
+Options:
+  -r --redux     Connect the component to redux
+  -s --scss      Create a scss file for the component
+  -m --material  Create a material ui component
+  -h, --help     output usage information
  
 ```
 
